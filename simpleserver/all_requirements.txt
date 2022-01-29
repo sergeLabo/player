@@ -1,0 +1,16 @@
+attrs==21.4.0
+Automat==20.2.0
+cffi==1.15.0
+constantly==15.1.0
+hyperlink==21.0.0
+idna==3.3
+incremental==21.3.0
+just-playback==0.1.6
+mutagen==1.45.1
+psutil==5.9.0
+pycparser==2.21
+six==1.16.0
+tinytag==1.7.0
+Twisted==21.7.0
+typing-extensions==4.0.1
+zope.interface==5.4.0
