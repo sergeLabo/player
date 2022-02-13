@@ -23,7 +23,7 @@
                         size_hint_y: 0.2
                     Label:  # text: 'Music Player'
                         size_hint_y: 0.40
-                        font_size: 48
+                        font_size: "64dp"
                         bold: True
                         valign: "center"
                         color: 192, 192, 192, 1
@@ -31,7 +31,7 @@
                     Label:  # info
                         id: info
                         size_hint_y: 0.40
-                        font_size: 36
+                        font_size: "48dp"
                         valign: "center"
                         color: 192, 192, 192, 1
                         text: root.info
@@ -40,21 +40,21 @@
                     orientation: 'horizontal'
                     size_hint_y: 0.20
                     Button:
-                        font_size: 22
+                        font_size: "48dp"
                         background_color: (2.8, 2.8, 2.8, 1)
                         color: 142, 142, 142, 1
                         bold: True
                         text: 'Quitter'
                         on_release: root.quit()
                     Button:
-                        font_size: 22
+                        font_size: "48dp"
                         background_color: (2.8, 2.8, 2.8, 1)
                         color: 142, 142, 142, 1
                         bold: True
                         text: 'Options'
                         on_release: app.open_settings()
                     Button:
-                        font_size: 22
+                        font_size: "48dp"
                         background_color: (2.8, 2.8, 2.8, 1)
                         color: 142, 142, 142, 1
                         bold: True
@@ -107,7 +107,7 @@
             size_hint_x: 0.88
             Label:
                 size_hint_y: 0.15
-                font_size: 24
+                font_size: "24dp"
                 color: 192, 192, 192, 1
                 bold: True
                 text: 'Albums'
@@ -165,7 +165,7 @@
                     size_hint_x: 0.50
                     id: artist
                     font_name: "fonts/BalooChettan2-Bold.ttf"
-                    font_size: 24
+                    font_size: "48dp"
                     color: [192, 192, 192, 1]
                     bold: True
 
@@ -173,7 +173,7 @@
                     id: album
                     size_hint_x: 0.50
                     font_name: "fonts/Aileron-Regular.otf"
-                    font_size: 24
+                    font_size: "48dp"
                     bold: True
                     text_size: self.size
                     valign: "center"
@@ -195,13 +195,13 @@
                     Label:
                         size_hint_y: 0.2
                         color: 0.8, 0.8, 0.8
-                        font_size: 48
+                        font_size: "48dp"
                         text: 'Titre'
                     Label:
                         size_hint_y: 0.2
                         id: track_number
                         color: 0.8, 0.8, 0.8
-                        font_size: 64
+                        font_size: "64dp"
                     BoxLayout:
                         size_hint_y: 0.3
 
@@ -243,7 +243,7 @@
                     size_hint_x: None
                     width: self.texture_size[0]
                     font_name: "fonts/BalooChettan2-Regular.ttf"
-                    font_size: 36
+                    font_size: "48dp"
                     color: 170, 170, 170, 1
 
             Slider:  # slider
@@ -263,7 +263,7 @@
                 id: current_position
                 # # text_size: self.size
                 halign: "left"
-                font_size: 24
+                font_size: "48dp"
                 color: 192, 192, 192, 1
 
         BoxLayout:  # boite droite
@@ -314,7 +314,7 @@
                 Label:
                     size_hint_y: 0.15
                     color: 0.8, 0.8, 0.8
-                    font_size: 30
+                    font_size: "48dp"
                     text: 'Titres'
                 ScrollView:  # scroll
                     id: tracks_scroll
