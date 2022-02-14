@@ -1,8 +1,11 @@
 # les miens
 old/
 *.geany
+*.project
+.buildozer/
 mon_env/
 *.mp4
+bin/
 
 
 # Byte-compiled / optimized / DLL files

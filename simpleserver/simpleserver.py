@@ -34,6 +34,8 @@ PORT = 8000
 CURDIR = str(Path(__file__).parent.absolute())
 print(f"Le dossier de ce script est: {CURDIR}")
 
+
+
 class HttpServer:
 
     def __init__(self):
@@ -52,6 +54,7 @@ class HttpServer:
     def stop(self):
         print("Fin du subprocess HTTP server ...")
         self.process.terminate()
+
 
 
 class MyTCPServer(Protocol):
@@ -155,6 +158,7 @@ class MyTCPServer(Protocol):
             self.transport.write(json.dumps(resp).encode('utf-8'))
 
 
+
 class MyTCPServerFactory(Factory):
 
     # This will be used by the default buildProtocol to create new protocols:
@@ -167,6 +171,7 @@ class MyTCPServerFactory(Factory):
 
     def stop(self):
         self.stopFactory()
+
 
 
 class Player:
@@ -182,27 +187,21 @@ class Player:
         self.library = get_library(MUSIC, CURDIR)
         self.playback = Playback()
         self.album_loop = 1
-        self.t_block_album = time()
-        self.t_block_track = time()
-        self.t_block_end = time()
 
     def apply_from_client(self, from_client):
 
         if self.album != from_client['album']:
-            if time() - self.t_block_end > 10:
-                self.album = from_client['album']
-                # Nouvel album
-                print("Nouvel Album", self.album)
-                if self.album:
-                    self.play_album(self.album)
+            self.album = from_client['album']
+            # Nouvel album
+            print("Nouvel Album", self.album)
+            if self.album:
+                self.play_album(self.album)
 
         elif self.track != from_client['track']:
-            if time() - self.t_block_track > 10:
-                self.t_block_track = time()
-                self.track = from_client['track']
-                print("New Track", self.track)
-                self.position = 0
-                self.play_track()
+            self.track = from_client['track']
+            print("New Track", self.track)
+            self.position = 0
+            self.play_track()
 
         elif from_client['position'] != 0:
             self.positon = from_client['position']
@@ -294,12 +293,9 @@ class Player:
                 # si inactive, curr_pos = 0
                 # Track suivant
                 if self.track < self.tracks_number:
-                    if time() - self.t_block_album > 10:
-                        self.t_block_album = time()
-                        self.t_block_track = time()
-                        self.track += 1
-                        print("\nLancement du track:", self.track)
-                        self.play_track()
+                    self.track += 1
+                    print("\nLancement du track:", self.track)
+                    self.play_track()
 
                 else:
                     print("Fin de l'album")
@@ -309,7 +305,6 @@ class Player:
                     self.playback.stop()
                     self.track = 1
                     self.end = 1
-                    self.t_block_end = time()
 
             sleep(1)
 

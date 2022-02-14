@@ -54,8 +54,8 @@ if ANDROID:
     Window.fullscreen = True
     Window.maximize()
 else:
-    Window.size = (1280, 720)
-    # # Window.size = (1920, 1200)
+    # # Window.size = (1280, 720)
+    Window.size = (1920, 1200)
 
 
 class MainScreen(Screen):
@@ -323,7 +323,7 @@ class Tracks(Screen):
             button = Button(size_hint_y=None,
                             background_color=(2.8, 2.8, 2.8, 1),
                             color=(0, 0, 0, 1),
-                            font_size=32,
+                            font_size="48dp",
                             text=text)
             buttoncallback = partial(self.set_selected_track, key)
             button.bind(on_release=buttoncallback)
