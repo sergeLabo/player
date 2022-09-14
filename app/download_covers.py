@@ -35,12 +35,20 @@ class DownloadFiles:
     """
 
     def __init__(self, url, root, covers_list):
+        """
+        url = http://{self.app.ip}:{8080}
+        root = self.covers_path
+        covers_list = get_file_list()
+        """
         self.url = url
         self.root = root
         self.covers_list = [x.split('/')[-1] for x in covers_list]
         print(f"Nom des Covers existantes: {self.covers_list}")
 
     def download_url(self):
+        """Retourne le texte qui vient du serveur http, d'où il va falloir
+        extraire les noms de fichier des covers.
+        """
         req = Request(self.url)
         resp = urlopen(req, timeout=1).read()
         text = resp.decode('utf-8')
@@ -56,20 +64,22 @@ class DownloadFiles:
         return text_clean
 
     def get_missing_covers(self, text):
-        # # print(text)
+        """Trouve tous les noms de fichier des images, et appelle le
+        téléchargement si pas dans self.covers_list.
+        """
         text = self.clean_text(text)
         root = ET.fromstring(text)
 
         for li in root.iter('li'):
-            # # print(li)
             a = li.findall('a')
-            # # print(a)
             for b in a:
-                # # print(b)
                 file_name = b.text
                 self.save_img(file_name)
 
     def save_img(self, file_name):
+        """Télécharge et enregistre file_name si elle n'est pas dans
+        la liste self.covers_list
+        """
         if file_name not in self.covers_list:
             file_url = self.url + file_name
             file_url = file_url.replace(" ", "%20")
@@ -83,7 +93,7 @@ class DownloadFiles:
 
 if __name__ == '__main__':
     covers_list = ['/media/data/3D/projets/player/app/covers/default_cover.png']
-    df = DownloadFiles('http://192.168.0.108:8080/',
+    df = DownloadFiles('http://192.168.0.105:8080/',
                        '/media/data/3D/projets/player/app/covers',
                        covers_list)
     text = df.download_url()

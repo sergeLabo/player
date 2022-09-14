@@ -145,6 +145,7 @@ def get_tracks(library, album_key):
 
 
 if __name__ == '__main__':
-    library = get_library('/media/data/3D/music', '/media/data/3D/projets/player/server')
+    library = get_library('/media/data/3D/music/flacs', '/media/data/3D/projets/player/simpleserver')
     print_library(library)
-    get_tracks(library, '/media/data/3D/music/flacs/Vieux_Farka_Tour\u00e9_Samba')
+    tracks = get_tracks(library, '/media/data/3D/music/flacs/Vieux_Farka_Tour\u00e9_Samba')
+    print(tracks)

@@ -34,7 +34,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
 from kivy.utils import platform
 
-from library_utils import get_tracks, dict_to_OrderdDict
+from library_utils import dict_to_OrderdDict  #, get_tracks
 from download_covers import DownloadFiles
 
 
@@ -54,8 +54,8 @@ if ANDROID:
     Window.fullscreen = True
     Window.maximize()
 else:
-    # # Window.size = (1280, 720)
-    Window.size = (1920, 1200)
+    k = 1.6
+    Window.size = (int(1920/k), int(1200/k))
 
 
 class MainScreen(Screen):
@@ -65,15 +65,7 @@ class MainScreen(Screen):
         super().__init__(**kwargs)
 
         self.app = App.get_running_app()
-        self.info = str(f"Attendez ...\n"
-                        f"ou le dossier des musiques\n"
-                        f"      est mal défini sur le serveur\n"
-                        f"ou le server n'est pas ON\n")
-        self.lib_ok = 0
-
-    def screens_start(self):
-        self.lib_ok = 1
-        self.info = "Player ON"
+        self.info = ""
 
     def quit(self):
         self.app.do_quit()
@@ -92,12 +84,11 @@ class Albums(Screen):
                                         'titres': { 0: ('tata', 'chemin abs'),
                                                     1: ('titi', 'chemin abs')}}}
         """
+
         super().__init__(**kwargs)
         self.app = App.get_running_app()
 
-        scr = self.app.screen_manager.get_screen('Main')
         self.album = None
-
 
     def change_covers_path_in_library(self):
 
@@ -158,19 +149,18 @@ class Albums(Screen):
             print("Les albums sont déjà ajoutés!")
 
     def set_selected_album(self, album, instance):
-
-        # Définition du nouvel album
+        # Utilisé dans Tracks
         self.album = album
-
-        # Lancement du player
-        scr = self.app.screen_manager.get_screen('Player')
-
-        if self.album:
-            scr.play_track(self.album, 1)
+        if album:
+            # Lancement du player
+            scrp = self.app.screen_manager.get_screen('Player')
+            scrp.album = album
+            scrp.track = 1
+            scrp.play_track(album, 1)
 
             # Lancement des Tracks
-            scr = self.app.screen_manager.get_screen('Tracks')
-            scr.add_tracks()
+            scrt = self.app.screen_manager.get_screen('Tracks')
+            scrt.add_tracks()
 
             # Bascule sur écran Player
             self.app.screen_manager.transition.direction = 'left'
@@ -201,10 +191,13 @@ class Player(Screen):
         """
 
         self.album = album
+        self.track = track
         # Nombre de tracks dans l'album
-        tracks = get_tracks(self.app.library, self.album)
-        # Liste des numéros de tracks
-        self.keys = list(tracks.keys())
+        try:
+            self.tracks = len(self.app.library[self.album]['titres'])
+        except:
+            self.tracks = 1
+        print(f"Nombre de pistes dans l'album {album}: {self.tracks}")
 
         # Récup des infos
         self.title = self.app.library[self.album]['titres'][str(self.track)][0]
@@ -246,8 +239,8 @@ class Player(Screen):
         if time() - self.t_block > 2:
             self.t_block = time()
             self.track += 1
-            if self.track > len(self.keys):
-                self.track = len(self.keys)
+            if self.track > self.tracks:
+                self.track = self.tracks
             self.play_track(self.album, self.track)
             self.app.for_svr['track'] = self.track
 
@@ -319,7 +312,6 @@ class Tracks(Screen):
 
         for key in range(1, len(dico) +1):
             text = (f"{key}  :  {dico[str(key)][0]}")
-            print(text)
             button = Button(size_hint_y=None,
                             background_color=(2.8, 2.8, 2.8, 1),
                             color=(0, 0, 0, 1),
@@ -346,100 +338,38 @@ SCREENS = { 0: (MainScreen, 'Main'),
 
 
 class MyTcpClient(Protocol):
-    global ANDROID
 
     def __init__(self, app):
-        global ANDROID
+        """app est le self
+        de                                                        ici
+        reactor.connectTCP(self.ip, self.port, MyTcpClientFactory(self))
+        """
         self.app = app
+        self.debug = 0
         print("Un protocol client créé")
-
-        # Création du dossier des covers
-        if ANDROID:
-            # storagepath.get_documents_dir()
-            self.covers_path = primary_external_storage_path() + '/covers'
-        else:
-            self.covers_path = str(Path.cwd()) + '/covers'
-        print(f"Dossier des covers: {self.covers_path}")
-        # Ne fait rien si existant
-        create_directory(self.covers_path)
-
         print(f"IP = {self.app.ip}, PORT = {self.app.port}")
 
     def connectionMade(self):
-        self.ask_for_library_thread()
-        pass
+        print("connectionMade")
+        self.app.connected = 1
+        self.send_message_thread()
 
     def connectionLost(self, reason):
         self.app.run_loop = 0
+        self.app.connected = 0
 
-    def ask_for_library_thread(self):
-        Thread(target=self.ask_for_library).start()
+    def send_message_thread(self):
+        Thread(target=self.send_message).start()
 
-    def ask_for_library(self):
-        # Ask for library
-        while not self.app.library_ok:
-            msg = ['give me the libray please']
-            if self.transport:
-                self.transport.write(json.dumps(msg).encode('utf-8'))
-            sleep(1)
-        # On passe au covers
-        self.ask_for_covers_thread()
-
-    def ask_for_covers_thread(self):
-        Thread(target=self.ask_for_covers).start()
-
-    def ask_for_covers(self):
-        # Demande des covers manquantes
-        covers_list = get_file_list(self.covers_path, ['jpg', 'png'])
-        print("Fichiers des covers existants:")
-        for img in covers_list:
-            print("    ",img)
-
-        # Demande de mise en route du httpserver
-        self.transport.write(json.dumps(['start httpserver', 1]).encode('utf-8'))
-        sleep(1)
-        n = 0
-        while not self.app.covers_ok:
-            # 'http://192.168.0.108:8080/'
-            df = DownloadFiles(f'http://{self.app.ip}:{8080}/',
-                               self.covers_path,
-                               covers_list)
-            try:
-                text = df.download_url()
-                df.get_missing_covers(text)
-                self.app.covers_ok = 1
-            except:
-                print("Le serveur HTTP n'est pas accessible !")
-            sleep(0.5)
-            n += 1
-            if n > 2:
-                self.app.covers_ok = 1
-
-        # Demande de stop du httpserver
-        sleep(1)
-        self.transport.write(json.dumps(['stop httpserver', 1]).encode('utf-8'))
-        sleep(1)
-        self.goto_Albums()
-        self.run_thread()
-
-    def goto_Albums(self):
-        scrm = self.app.screen_manager.get_screen('Main')
-        scrm.screens_start()
-        sleep(0.2)
-        self.app.screen_manager.transition.direction = 'right'
-        scra = self.app.screen_manager.get_screen('Albums')
-        scra.add_cover_buttons()
-        print("Demande d'ajout des albums dans Albums")
-
-    def run_thread(self):
-        Thread(target=self.run).start()
-
-    def run(self):
+    def send_message(self):
         while self.app.run_loop:
-            data = ['values from client', self.app.for_svr]
+            data = ['from_client', self.app.for_svr]
+            if self.debug:
+                print("Envoi:", data)
             self.transport.write(json.dumps(data).encode('utf-8'))
             # Reset
             self.app.for_svr['position'] = 0
+            self.app.for_svr['library'] = 0
             sleep(1)
 
     def dataReceived(self, data):
@@ -469,12 +399,11 @@ class MyTcpClientFactory(ReconnectingClientFactory):
 
 
 class PlayerApp(App):
+    global ANDROID
 
     def build(self):
         """Exécuté après build_config, construit les écrans"""
         Window.clearcolor = (1, 1, 1, 1)
-
-        self.info = "Player On"
 
         self.screen_manager = ScreenManager()
         for i in range(len(SCREENS)):
@@ -497,7 +426,6 @@ class PlayerApp(App):
         Cette méthode est appelée par app.open_settings() dans .kv,
         donc si Options est cliqué !
         """
-
         print("Construction de l'écran Options")
         data = """[ {"type": "title", "title": "Music Player"},
                         {"type": "string",
@@ -518,20 +446,89 @@ class PlayerApp(App):
     def on_start(self):
         """Exécuté apres build()"""
 
-        self.library = None
+        global ANDROID
+
+
+        scrm = self.screen_manager.get_screen('Main')
+        scrm.info = "Player On"
+
+        self.debug = 0
+        # Pour thread des messages server/kivy
+        self.run_loop = 1
+        # Création du client TCP
+        self.connected = 0
+        self.tcp_init()
+
+        # Création du dossier des covers
+        if ANDROID:
+            # storagepath.get_documents_dir()
+            self.covers_path = primary_external_storage_path() + '/covers'
+        else:
+            self.covers_path = str(Path.cwd()) + '/covers'
+        print(f"Dossier des covers: {self.covers_path}")
+        # Ne fait rien si existant
+        create_directory(self.covers_path)
+
+        # Récupération de la library qui est dans covers
+        if ANDROID:
+            self.library_file = self.covers_path + '/library.json'
+        else:
+            self.library_file = './covers/library.json'
+        print(f"Le fichier library = {self.library_file}")
+
+        # Création si besoin
+        self.create_library_json_file()
+        # Sinon chargement
+        self.load_library()
+
+        # Chargement des covers dans le screen Albums
+        if self.library:
+            scra = self.screen_manager.get_screen('Albums')
+            scra.add_cover_buttons()
 
         # Les infos envoyées au serveur,
         # à chaque requête "hello" soit tous les 1/10 de seconde
         self.for_svr = {}
         self.for_svr_reset()
 
-        # Pour suivi de library reçu
-        self.library_ok = 0
-        self.run_loop = 1
-        # Pour suivi des covers
-        self.covers_ok = 0
+        # Prêt pour jouer
+        if self.connected:
+            scrm.info = "Albums existants chargés"
+        else:
+            Thread(target=self.update_info).start()
 
-        self.tcp_init()
+    def update_info(self):
+        scrm = self.screen_manager.get_screen('Main')
+        while not self.connected:
+            scrm.info = "Le serveur n'est pas accessible ..."
+            sleep(1)
+            scrm.info = "Allume le serveur ..."
+            sleep(1)
+        scrm.info = "Le Player est prêt"
+
+    def create_library_json_file(self):
+        print(f"Création de {self.library_file} si inexistant")
+        a = os.path.exists(self.library_file)
+        print("verif a exist", a)
+        if not os.path.exists(self.library_file):
+            with open(self.library_file, 'w') as outfile:
+                data = {}
+                json.dump(data, outfile)
+            print(f"Création de {self.library_file}")
+
+    def save_library(self):
+        """Enregistrement de la library en json dans le dossier courrant"""
+
+        with open(self.library_file, "w") as fd:
+            fd.write(json.dumps(self.library))
+        print(f"library.json enregistré")
+
+    def load_library(self):
+
+        with open(self.library_file) as fd:
+            data = fd.read()
+            self.library = json.loads(data)
+        print("self.library chargé")
 
     def for_svr_reset(self):
         self.for_svr['album'] = 0
@@ -540,11 +537,12 @@ class PlayerApp(App):
         self.for_svr['play_pause'] = 0
         self.for_svr['quit'] = 0
         self.for_svr['shutdown'] = 0
+        self.for_svr['library'] = 0
+        self.for_svr['http_on'] = 0
 
     def tcp_init(self):
         self.ip = self.config.get('network', 'ip')
         self.port = int(self.config.get('network', 'port'))
-
         reactor.connectTCP(self.ip, self.port, MyTcpClientFactory(self))
 
     def handle_message(self, msg):
@@ -554,12 +552,24 @@ class PlayerApp(App):
             msg = None
 
         if msg:
+            if self.debug:
+                print(msg)
+
             if msg[0] == 'library':
                 self.library = msg[1]
-                self.library_ok = 1
                 print("library reçue, nombre d'albums:", len(self.library))
+                print(self.library)
+                scrm = self.screen_manager.get_screen('Main')
+                scrm.info = "Liste des albums ok."
+                sleep(1)
+                # Enregistrement de la lib en json
+                self.save_library()
+                # Affichage dans le screen Albums
+                if self.library:
+                    scra = self.screen_manager.get_screen('Albums')
+                    scra.add_cover_buttons()
 
-            if msg[0] == 'from server':
+            elif msg[0] == 'from server':
                 timestamp = msg[1]
                 current_lenght = msg[2]
                 track = msg[3]
@@ -590,15 +600,59 @@ class PlayerApp(App):
                     self.screen_manager.current = 'Albums'
                     self.for_svr_reset()
 
+    def ask_for_library_and_covers_thread(self):
+        """Demande par button sur Main de la lib et covers,
+        thread pour ne pas bloquer l'affichage."""
+        Thread(target=self.ask_for_library_and_covers).start()
+
+    def ask_for_library_and_covers(self):
+        # Pour afficher des infos seulement
+
+        scrm = self.screen_manager.get_screen('Main')
+        scrm.info = "Mise à jour des albums ..."
+
+        # Ask for library
+        self.for_svr['library'] = 1
+        # TODO attente de la réponse
+        sleep(2)
+
+        covers_list = get_file_list(self.covers_path, ['jpg', 'png'])
+        print("Fichiers des albums existants:")
+        for img in covers_list:
+            print("    ", img)
+
+        scrm.info = "Liste des albums:\n"
+        for img in covers_list:
+            scrm.info += str(img.split('/')[-1]) + "\n"
+        sleep(1)
+
+        # Demande de mise en route du httpserver
+        self.for_svr['http_on'] = 1
+        sleep(2)
+        scrm.info = "Téléchargement en cours ...\n"
+
+        # 'http://192.168.0.108:8080/'
+        df = DownloadFiles(f'http://{self.ip}:{8080}/',
+                           self.covers_path,
+                           covers_list)
+        try:
+            text = df.download_url()
+            df.get_missing_covers(text)
+            scrm.info = "Albums mis à jour et chargés!"
+        except:
+            print("Le serveur HTTP n'est pas accessible !")
+            scrm.info = "Démarrez le serveur !"
+
+        # Demande de stop du httpserver
+        self.for_svr['http_on'] = 0
+
     def do_quit(self):
         print("Quit final ...")
         self.for_svr['quit'] = 1
         self.wait_before_quit_thread()
 
         print("Fin des threads ...")
-        self.library_ok = 1
         self.run_loop = 0
-        self.covers_ok = 1
         sleep(1)
 
         print("Fin du TCP")

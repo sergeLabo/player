@@ -10,59 +10,66 @@
                 size: self.size
                 pos: self.pos
 
-        BoxLayout:  # boite gauche
-            size_hint_x: 0.06
 
         BoxLayout:  # boite centre
-            size_hint_x: 0.88
-            BoxLayout:
-                orientation: 'vertical'
-                BoxLayout:  # une boite pour titre
-                    orientation: 'vertical'
-                    BoxLayout:
-                        size_hint_y: 0.2
-                    Label:  # text: 'Music Player'
-                        size_hint_y: 0.40
-                        font_size: "64dp"
-                        bold: True
-                        valign: "center"
-                        color: 192, 192, 192, 1
-                        text: 'Mon Lecteur Musical'
-                    Label:  # info
-                        id: info
-                        size_hint_y: 0.40
-                        font_size: "48dp"
-                        valign: "center"
-                        color: 192, 192, 192, 1
-                        text: root.info
+            size_hint_x: 0.90
+            orientation: 'vertical'
+            Label:  # text: 'Music Player'
+                size_hint_y: 0.15
+                font_size: "48dp"
+                bold: True
+                valign: "center"
+                color: 192, 192, 192, 1
+                text: 'Lecteur Musical'
 
-                BoxLayout:  # 3 button du bas
+            BoxLayout:  # info et en dessous 4 button
+                orientation: 'vertical'
+                Label:  # info
+                    size_hint_y: 0.80
+                    id: info
+                    font_size: "36dp"
+                    valign: "center"
+                    color: 192, 192, 192, 1
+                    text: root.info
+
+
+                BoxLayout:
                     orientation: 'horizontal'
                     size_hint_y: 0.20
-                    Button:
-                        font_size: "48dp"
-                        background_color: (2.8, 2.8, 2.8, 1)
-                        color: 142, 142, 142, 1
-                        bold: True
-                        text: 'Quitter'
-                        on_release: root.quit()
-                    Button:
-                        font_size: "48dp"
-                        background_color: (2.8, 2.8, 2.8, 1)
-                        color: 142, 142, 142, 1
-                        bold: True
-                        text: 'Options'
-                        on_release: app.open_settings()
-                    Button:
-                        font_size: "48dp"
-                        background_color: (2.8, 2.8, 2.8, 1)
-                        color: 142, 142, 142, 1
-                        bold: True
-                        text: 'Eteindre'
-                        on_release: root.shutdown()
+                    BoxLayout:  # 4 button
+                        orientation: 'horizontal'
+                        Button:
+                            font_size: "36dp"
+                            background_color: (2.8, 2.8, 2.8, 1)
+                            color: 142, 142, 142, 1
+                            bold: True
+                            text: 'Eteindre'
+                            on_release: root.shutdown()
+                        Button:
+                            font_size: "36dp"
+                            background_color: (2.8, 2.8, 2.8, 1)
+                            color: 142, 142, 142, 1
+                            bold: True
+                            text: 'Quitter'
+                            on_release: root.quit()
+                        Button:
+                            font_size: "36dp"
+                            background_color: (2.8, 2.8, 2.8, 1)
+                            color: 142, 142, 142, 1
+                            bold: True
+                            text: 'Options'
+                            on_release: app.open_settings()
+                        Button:
+                            font_size: "36dp"
+                            background_color: (2.8, 2.8, 2.8, 1)
+                            color: 142, 142, 142, 1
+                            bold: True
+                            text: 'Mise à jour'
+                            on_release: root.app.ask_for_library_and_covers_thread()
+
 
         BoxLayout:  # boite droite
-            size_hint_x: 0.06
+            size_hint_x: 0.10
             BoxLayout:
                 orientation: 'vertical'
                 padding: 10

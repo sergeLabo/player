@@ -80,6 +80,7 @@ def get_tracks(lib_infos, album_key):
                                 'cover':,
                                 'titres': { 1: ('tata', 'chemin abs', lenght),
                                             2: ('titi', 'chemin abs', lenght)}}}
+    Pas utilisé
     """
 
     keys = sorted([int(x) for x in list(lib_infos[album_key]['titres'].keys())])

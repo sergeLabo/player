@@ -23,11 +23,13 @@ from just_playback import Playback
 
 from library import get_library, get_tracks, dict_to_OrderdDict
 
-print(f"platform: {platform.platform()}")
-if 'Linux-5.10.0-10-amd64-x86_64-with-glibc2.31' in platform.platform():
-    MUSIC = '/media/data/3D/music/flacs'
-else:
-    MUSIC = '/media/pi/USB3x16Go/music/flacs'
+# # print(f"platform: {platform.platform()}")
+# # # Ce truc est nul, car afux si maj du noyau
+# # if 'Linux-5' in platform.platform():
+     # # MUSIC = '/media/data/3D/music/flacs'
+# # else:
+
+MUSIC = '/media/pi/USB3x16Go/music/flacs'
 print(f"le dossier MUSIC est {MUSIC}")
 
 PORT = 8000
@@ -35,26 +37,33 @@ CURDIR = str(Path(__file__).parent.absolute())
 print(f"Le dossier de ce script est: {CURDIR}")
 
 
-
 class HttpServer:
-
+    global CURDIR
     def __init__(self):
+        global CURDIR
         self.debug = 1
+        self.covers_dir = CURDIR + '/covers'
+
+    def update_covers_directory(self):
+        pass
+
+    def save_img_in_covers_directory(self, file_name):
+        pass
 
     def run(self):
         """Run de la commande dans le dossier covers"""
-        self.process = subprocess.Popen(    'python3 -m http.server 8080',
-                                            shell=True,
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.STDOUT,
-                                            cwd=CURDIR + '/covers')
+        # #
+        print(f"Dossier des covers: {self.covers_dir}")
+        self.process = subprocess.Popen('python3 -m http.server 8080',
+                                        shell=True,
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT,
+                                        cwd=self.covers_dir)
         if self.debug:
             print("Server HTTP is running ...")
 
     def stop(self):
-        print("Fin du subprocess HTTP server ...")
         self.process.terminate()
-
 
 
 class MyTCPServer(Protocol):
@@ -72,7 +81,7 @@ class MyTCPServer(Protocol):
         self.message = ""
         self.httpserver = None
         self.run_loop = 1
-        self.debug = 1
+        self.debug = 0
 
     def connectionMade(self):
         """
@@ -87,25 +96,17 @@ class MyTCPServer(Protocol):
 
         MyTCPServer.nb_protocol -= 1
         print(f"connectionLost Nombre de protocol = {MyTCPServer.nb_protocol}")
-
+        self.kill_httpserver()
+        
+    def kill_httpserver(self):
         # Kill du Httpserver
         try:
             self.httpserver.stop()
             del self.httpserver.process
             print("Fin du httpserver")
         except:
-            print("httpserver is not running")
-
-        # Fin playback
-        if self.factory.player.playback.active:
-            self.factory.player.playback.seek(0)
-            self.factory.player.playback.stop()
-            print(f"Fin du playback")
-
-        self.factory.player.album = None
-        self.factory.player.album_loop = 0
-        self.factory.player.track = 1
-        self.factory.player.end = 0
+            if self.debug:
+                print("httpserver is not running")
 
     def dataReceived(self, data):
         self.handle_message(data)
@@ -120,29 +121,31 @@ class MyTCPServer(Protocol):
         resp = None
 
         if msg:
-            print(f"\nMessage reçu: {msg}")
-            if msg[0] == 'give me the libray please':
-                resp = ['library', self.factory.player.library]
+            if self.debug:
+                print(f"\nMessage reçu: {msg}")
 
-            elif msg[0] == 'start httpserver':
-                if not self.httpserver:
-                    self.httpserver = HttpServer()
-                    self.httpserver.run()
-
-            elif msg[0] == 'stop httpserver':
-                if self.httpserver:
-                    self.httpserver.stop()
-                    del self.httpserver.process
-                    self.httpserver = None
-                    print("Le client a dit: Fin du httpserver")
-
-            elif msg[0] == 'values from client':
+            if msg[0] == 'from_client':
                 self.factory.player.apply_from_client(msg[1])
-                resp = ['from server',
-                        self.factory.player.playback.curr_pos,
-                        self.factory.player.lenght,
-                        self.factory.player.track,
-                        self.factory.player.end]
+                
+                if self.factory.player.http_on == 1:
+                    self.factory.player.http_on == 0
+                    if not self.httpserver:
+                        self.httpserver = HttpServer()
+                        self.httpserver.run()
+                    
+                if self.factory.player.http_on == 0:
+                    self.kill_httpserver()
+                    
+                if self.factory.player.send_library == 1:
+                    resp = ['library', self.factory.player.library]
+                    self.factory.player.send_library = 0
+
+                else:
+                    resp = ['from server',
+                            self.factory.player.playback.curr_pos,
+                            self.factory.player.lenght,
+                            self.factory.player.track,
+                            self.factory.player.end]
 
         if resp:
             if self.debug:
@@ -152,11 +155,9 @@ class MyTCPServer(Protocol):
                       f"    track {self.factory.player.track}",
                       f"    positon {self.factory.player.positon}",
                       f"    lenght {self.factory.player.lenght}",
-                      f"    end {self.factory.player.end}",
-                      f"    album_loop {self.factory.player.album_loop}")
+                      f"    end {self.factory.player.end}")
 
             self.transport.write(json.dumps(resp).encode('utf-8'))
-
 
 
 class MyTCPServerFactory(Factory):
@@ -173,35 +174,60 @@ class MyTCPServerFactory(Factory):
         self.stopFactory()
 
 
-
 class Player:
+    global MUSIC, CURDIR
 
     def __init__(self):
+        global MUSIC, CURDIR
 
         self.pause = 0
         self.track = 1
         self.positon = 0
         self.lenght = 60
-        self.album = None
         self.end = 0
+        self.album = None
         self.library = get_library(MUSIC, CURDIR)
         self.playback = Playback()
-        self.album_loop = 1
-
+        self.track_loop = 0
+        self.t_block_track = time()
+        self.t_block_end = time()
+        # Suivi des réponses
+        self.send_library = 0  # Si 1 il faut envoyer
+        self.http_on = 0  # http server: 0 off 1 on
+        
     def apply_from_client(self, from_client):
+        """Modification apportée depuis l'app"""
+
+        if from_client['library'] == 1:
+            self.send_library = 1
+
+        if from_client['http_on'] == 1:
+            self.http_on = 1
+            
+        if from_client['http_on'] == 0:
+            self.http_on = 0
 
         if self.album != from_client['album']:
-            self.album = from_client['album']
-            # Nouvel album
-            print("Nouvel Album", self.album)
-            if self.album:
-                self.play_album(self.album)
+            if time() - self.t_block_end > 10:
+                self.album = from_client['album']
+                
+                # Nouvel album
+                if self.album != 0:
+                    print("Nouvel Album", self.album)
+                    self.track = 1
+                    self.position = 0
+                    self.pause = 0
+                    if self.album:
+                        self.play_album(self.album)
 
         elif self.track != from_client['track']:
-            self.track = from_client['track']
-            print("New Track", self.track)
-            self.position = 0
-            self.play_track()
+            if time() - self.t_block_track > 10:
+                self.t_block_track = time()
+                self.track = from_client['track']
+                print("New Track", self.track)
+                self.position = 0
+                self.track = self.track
+                self.play_track_n(self.track)
 
         elif from_client['position'] != 0:
             self.positon = from_client['position']
@@ -231,84 +257,54 @@ class Player:
         subprocess.run(['sudo', 'shutdown', 'now'])
 
     def play_album(self, album):
-        """Lancement d'un album, un autre peut être en cours"""
+        """Lancement d'un nouvel album: album.
+        Un autre peut être en cours, et ça peut être le même.
+        Les tracks doivent s'enchaîner même si l'app est déconnectée.
+        """
 
         self.album = album
-        # Reset de la fin de l'album précédent
-        self.end = 0
-
         # Nombre de clés dans le dict des 'titres'
         self.tracks_number = len(self.library[self.album]['titres'])
-        self.album_loop = 0
+
+        print(f"Lecture de l'album: {self.album}")
+
         self.track = 1
+        self.play_track_n(self.track)
 
-        if self.playback.active:
-            self.playback.stop()
-            # Attente de la fin du thread run_tracks
-            sleep(0.2)
-
-        # Lancement de self.track qui enchainera les autres
-        self.play_track()
-
-    def play_track(self):
-        """
-        l = {'nom du dossier parent': {  'album': 'toto',
-                                                'artist':,
-                                                'cover':,
-                                                'titres': { 0: ('tata',
-                                                                'chemin abs',
-                                                                lenght),
-                                                            1: ('titi',
-                                                                'chemin abs',
-                                                                lenght)}}}
-        l et 'titres' sont des un OrderedDict
-        """
-
-        # Reset de la fin de l'album précédent, répétition !
-        self.end = 0
-
+    def play_track_n(self, n):
         if self.album:
-            name = self.library[self.album]['titres'][self.track][0]
-            print("    Play track", self.track, name, "de", self.album)
+            self.fichier_to_play = self.library[self.album]['titres'][n][1]
+            self.lenght =  self.library[self.album]['titres'][n][2]
+            print(f"Lecture du fichier: {self.fichier_to_play}",
+                  f"de {self.lenght} secondes")
 
-            self.fichier_to_play = self.library[self.album]['titres'][self.track][1]
-            self.lenght =  self.library[self.album]['titres'][self.track][2]
-
-            self.playback.stop()
+            # Chargement du ficheir à lire
+            print(f"Chargement du fichier: {self.fichier_to_play}")
             self.playback.load_file(self.fichier_to_play)
+            print("Fichier chargé")
+            # On se place à zéro
             self.playback.seek(0)
+            # On joue
+            print(f"Play de la piste: {n}")
             self.playback.play()
+            sleep(2)
+            self.next_track_thread()
+        
+    def next_track_thread(self):
+        Thread(target=self.next_track).start()
+        
+    def next_track(self):
+        while self.playback.active:
+            sleep(3)
 
-            # Pour enchainer les track
-            self.album_loop = 1
-            self.run_tracks_thread()
-
-    def run_tracks_thread(self):
-        Thread(target=self.run_tracks).start()
-
-    def run_tracks(self):
-
-        while self.album_loop:
-            if not self.playback.active:
-                # si inactive, curr_pos = 0
-                # Track suivant
-                if self.track < self.tracks_number:
-                    self.track += 1
-                    print("\nLancement du track:", self.track)
-                    self.play_track()
-
-                else:
-                    print("Fin de l'album")
-                    self.album = None
-                    self.album_loop = 0
-                    self.playback.seek(0)
-                    self.playback.stop()
-                    self.track = 1
-                    self.end = 1
-
-            sleep(1)
-
-
+        if self.track < self.tracks_number:
+            self.track += 1
+            print(f"Play du track {self.track}")
+            self.t_block_track = time()
+            self.play_track_n(self.track)
+        else:
+            self.playback.stop()
+            
 
 endpoint = TCP4ServerEndpoint(reactor, PORT)
 endpoint.listen(MyTCPServerFactory())
