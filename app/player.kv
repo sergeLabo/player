@@ -1,330 +1,156 @@
 #:kivy 2.0.0
 
-<MainScreen>:
-    BoxLayout:  # une boite pour tout
+<Player>:
+
+    BoxLayout:
         orientation: 'horizontal'
-        canvas:
-            Color:
-                rgb: 0.95, 0.95, 0.95   # Fond blanc
-            Rectangle:
-                size: self.size
-                pos: self.pos
-
-
-        BoxLayout:  # boite centre
-            size_hint_x: 0.90
+        BoxLayout:  # Album scroll
+            size_hint_x: 40
             orientation: 'vertical'
-            Label:  # text: 'Music Player'
-                size_hint_y: 0.15
-                font_size: "48dp"
-                bold: True
-                valign: "center"
-                color: 192, 192, 192, 1
-                text: 'Lecteur Musical'
-
-            BoxLayout:  # info et en dessous 4 button
-                orientation: 'vertical'
-                Label:  # info
-                    size_hint_y: 0.80
-                    id: info
-                    font_size: "36dp"
-                    valign: "center"
-                    color: 192, 192, 192, 1
-                    text: root.info
-
-
-                BoxLayout:
-                    orientation: 'horizontal'
-                    size_hint_y: 0.20
-                    BoxLayout:  # 4 button
-                        orientation: 'horizontal'
-                        Button:
-                            font_size: "36dp"
-                            background_color: (2.8, 2.8, 2.8, 1)
-                            color: 142, 142, 142, 1
-                            bold: True
-                            text: 'Eteindre'
-                            on_release: root.shutdown()
-                        Button:
-                            font_size: "36dp"
-                            background_color: (2.8, 2.8, 2.8, 1)
-                            color: 142, 142, 142, 1
-                            bold: True
-                            text: 'Quitter'
-                            on_release: root.quit()
-                        Button:
-                            font_size: "36dp"
-                            background_color: (2.8, 2.8, 2.8, 1)
-                            color: 142, 142, 142, 1
-                            bold: True
-                            text: 'Options'
-                            on_release: app.open_settings()
-                        Button:
-                            font_size: "36dp"
-                            background_color: (2.8, 2.8, 2.8, 1)
-                            color: 142, 142, 142, 1
-                            bold: True
-                            text: 'Mise à jour'
-                            on_release: root.app.ask_for_library_and_covers_thread()
-
-
-        BoxLayout:  # boite droite
-            size_hint_x: 0.10
-            BoxLayout:
-                orientation: 'vertical'
-                padding: 10
-                BoxLayout:
-                    size_hint_y: 0.25
-                Button:
-                    size_hint_y: 0.50
-                    # # keep_ratio: True
-                    background_normal: "images/albums.png"
-                    background_down: "images/albums.png"
-                    on_release:
-                        root.manager.transition.direction = "left"
-                        app.root.current = "Albums"
-                BoxLayout:
-                    size_hint_y: 0.25
-
-<Albums>:
-    BoxLayout:  # une boite pour tout
-        orientation: 'horizontal'
-
-        BoxLayout:  # boite gauche
-            size_hint_x: 0.06
-            BoxLayout:
-                orientation: 'vertical'
-                padding: 10
-                BoxLayout:
-                    size_hint_y: 0.25
-                Button:
-                    size_hint_y: 0.50
-                    keep_ratio: True
-                    background_normal: "images/accueil.png"
-                    background_down: "images/accueil.png"
-
-                    on_release:
-                        root.manager.transition.direction = "right"
-                        app.root.current = "Main"
-                BoxLayout:
-                    size_hint_y: 0.25
-
-        BoxLayout:  # une boite centre
-            orientation: 'vertical'
-            size_hint_x: 0.88
-            Label:
-                size_hint_y: 0.15
+            Label:  # Titre
+                size_hint_y: 0.05
                 font_size: "24dp"
                 color: 192, 192, 192, 1
                 bold: True
                 text: 'Albums'
             ScrollView:  # scroll
+                size_hint_y: 0.95
                 id: album_scroll
 
-        BoxLayout:  # boite droite
-            size_hint_x: 0.06
-            BoxLayout:
-                padding: 10
-                orientation: 'vertical'
-                BoxLayout:
-                    size_hint_y: 0.25
-                Button:
-                    size_hint_y: 0.50
-                    keep_ratio: True
-                    background_normal: "images/lecteur.png"
-                    background_down: "images/lecteur.png"
-                    on_release:
-                        root.manager.transition.direction = "left"
-                        app.root.current = "Player"
-                BoxLayout:
-                    size_hint_y: 0.25
 
-<Player>:
-    BoxLayout:  # une boite pour tout
-        orientation: 'horizontal'
-
-        BoxLayout:  # boite gauche
-            size_hint_x: 0.06
-            BoxLayout:
-                padding: 10
-                orientation: 'vertical'
-                BoxLayout:
-                    size_hint_y: 0.25
-                Button:
-                    size_hint_y: 0.50
-                    keep_ratio: True
-                    background_normal: "images/albums.png"
-                    background_down: "images/albums.png"
-                    on_release:
-                        root.manager.transition.direction = "right"
-                        app.root.current = "Albums"
-                BoxLayout:
-                    size_hint_y: 0.25
-
-        BoxLayout:
-            size_hint_x: 0.88
+        BoxLayout:  # Player
+            size_hint_x: 60
             orientation: 'vertical'
-
-            BoxLayout:  # bouton / album / bouton
-                orientation: 'horizontal'
-                size_hint_y: 0.15
-                Label:  # artist
-                    size_hint_x: 0.50
-                    id: artist
-                    font_name: "fonts/BalooChettan2-Bold.ttf"
-                    font_size: "48dp"
-                    color: [192, 192, 192, 1]
-                    bold: True
-
-                Label:  # album
-                    id: album
-                    size_hint_x: 0.50
-                    font_name: "fonts/Aileron-Regular.otf"
-                    font_size: "48dp"
-                    bold: True
-                    text_size: self.size
-                    valign: "center"
-                    halign: "center"
-                    color: 192, 192, 192, 1
-
-            BoxLayout:  # cover
-                size_hint_y: 0.55
-                orientation: 'horizontal'
-
+            BoxLayout:  # Image et boutons
+                size_hint_y: 0.24
                 BoxLayout:
-                    size_hint_x: 0.06
+                    orientation: 'horizontal'
+                    BoxLayout:  # N° Track
+                        BoxLayout:
+                            size_hint_x: 0.2
+                            BoxLayout:
+                                orientation: 'vertical'
+                                Label:
+                                    color: 0.6, 0.6, 0.6
+                                    font_size: "24dp"
+                                    text: "Track"
+                                Label:
+                                    id: track_number
+                                    color: 0.55, 0.55, 0.55
+                                    font_size: "48dp"
+                    BoxLayout:  # Image
+                        Image:  # cover
+                            id: album_art
+                            size_hint_x: 0.8
+                            source: "covers/default_cover.png"
+                    BoxLayout: # Play Pause Droite Gauche
+                        orientation: 'horizontal'
+                        BoxLayout:
+                            size_hint_x: 0.3
+                        BoxLayout:
+                            size_hint_x: 0.4
+                            orientation: 'vertical'
+                            BoxLayout:
+                                size_hint_y: 0.33
+                            Button:  # play/pause
+                                size_hint_y: 0.33
+                                id: play_pause
+                                background_normal: "images/Play-normal.png"
+                                background_down: "images/Play-down.png"
+                                on_press: root.play_pause()
+                            BoxLayout:
+                                size_hint_y: 0.33
+                        BoxLayout:
+                            size_hint_x: 0.3
 
+            BoxLayout:  # 5 lignes
+                size_hint_y: 0.35
                 BoxLayout:
                     orientation: 'vertical'
-                    size_hint_x: 0.1
-                    BoxLayout:
-                        size_hint_y: 0.3
-                    Label:
-                        size_hint_y: 0.2
-                        color: 0.8, 0.8, 0.8
-                        font_size: "48dp"
-                        text: 'Titre'
-                    Label:
-                        size_hint_y: 0.2
-                        id: track_number
-                        color: 0.8, 0.8, 0.8
-                        font_size: "64dp"
-                    BoxLayout:
-                        size_hint_y: 0.3
+                    Label:  # artist
+                        size_hint_y: 0.08
+                        id: artist
+                        font_name: "fonts/BalooChettan2-Bold.ttf"
+                        font_size: "24dp"
+                        color: [192, 192, 192, 1]
+                        bold: True
+                    Label:  # album
+                        size_hint_y: 0.08
+                        id: album
+                        font_name: "fonts/Aileron-Regular.otf"
+                        font_size: "24dp"
+                        bold: True
+                        text_size: self.size
+                        valign: "center"
+                        halign: "center"
+                        color: 192, 192, 192, 1
+                    Label:  # Morceau
+                        size_hint_y: 0.08
+                        id: title
+                        font_name: "fonts/BalooChettan2-Regular.ttf"
+                        font_size: "24dp"
+                        color: 170, 170, 170, 1
+                    Slider:  # slider
+                        size_hint_y: 0.08
+                        id: song_slider
+                        value_track: True
+                        value_track_color: 0.5, 0.5, 0.5, 1
+                        min: 0
+                        max: root.maxi
+                        step: 1
+                        on_touch_up: root.change_position(self.value)
+                    Label:  # current_position
+                        size_hint_y: 0.08
+                        id: current_position
+                        font_size: "24dp"
+                        color: 192, 192, 192, 1
+                        text: "10 | 3:20"
+                    BoxLayout:  # une boite pour debug
+                        size_hint_y: 0.08
+                        orientation: 'horizontal'
+                        Label:
+                            id: debug
+                            color: 0.6, 0.6, 0.6
+                            font_size: "12dp"
+                            bold: True
+                    BoxLayout:  # une boite pour scroll
+                        orientation: 'vertical'
+                        size_hint_y: 0.46
+                        BoxLayout:
+                            orientation: 'vertical'
+                            ScrollView:  # scroll
+                                size_hint_y: 0.9
+                                id: tracks_scroll
 
-                Image:  # cover
-                    id: album_art
-                    size_hint_x: 0.8
-                    source: "covers/default_cover.png"
-
-                BoxLayout:  # previous_track, play/pause, next_track
-                    orientation: 'vertical'
-                    size_hint_x: 0.12
-                    Button: # previous_track
-                        size_hint_y: 0.33
-                        background_normal: "images/left_normal.png"
-                        background_down: "images/left_down.png"
-                        on_press: root.previous()
-                    Button:  # play/pause
-                        size_hint_y: 0.33
-                        id: play_pause
-                        background_normal: "images/Play-normal.png"
-                        background_down: "images/Play-down.png"
-                        on_press: root.play_pause()
-                    Button:  # next_track
-                        size_hint_y: 0.33
-                        background_normal: "images/right_normal.png"
-                        background_down: "images/right_down.png"
-                        on_press: root.next()
-
-                BoxLayout:
-                    size_hint_x: 0.06
-
-            ScrollView:  # title_scroll
-                size_hint_y: 0.10
-                id: title_scroll
-                effect_cls: "ScrollEffect"
-                scroll_x: 0
-                Label:
-                    id: title
-                    size_hint_x: None
-                    width: self.texture_size[0]
-                    font_name: "fonts/BalooChettan2-Regular.ttf"
-                    font_size: "48dp"
-                    color: 170, 170, 170, 1
-
-            Slider:  # slider
-                size_hint_y: 0.10
-                id: song_slider
-                # # cursor_size: 10, 10
-                value_track: True
-                value_track_color: 0.5, 0.5, 0.5, 1
-                disabled: True
-                min: 0
-                max: root.maxi
-                on_touch_up: root.change_position(self.value)
-
-            Label:  # current_position
-                size_hint_y: 0.10
-                # # padding_x: 30
-                id: current_position
-                # # text_size: self.size
-                halign: "left"
-                font_size: "48dp"
-                color: 192, 192, 192, 1
-
-        BoxLayout:  # boite droite
-            size_hint_x: 0.06
-            BoxLayout:
-                padding: 10
-                orientation: 'vertical'
-                BoxLayout:
-                    size_hint_y: 0.25
-                Button:
-                    size_hint_y: 0.50
-                    keep_ratio: True
-                    background_normal: "images/titres.png"
-                    background_down: "images/titres.png"
-                    on_release:
-                        root.manager.transition.direction = "left"
-                        app.root.current = "Tracks"
-                BoxLayout:
-                    size_hint_y: 0.25
-
-<Tracks>:
-    BoxLayout:  # une boite pour tout
-        orientation: 'horizontal'
-
-        BoxLayout:  # boite gauche
-            size_hint_x: 0.06
-            BoxLayout:
-                padding: 10
-                orientation: 'vertical'
-                BoxLayout:
-                    size_hint_y: 0.25
-                Button:
-                    size_hint_y: 0.50
-                    keep_ratio: True
-                    background_normal: "images/lecteur.png"
-                    background_down: "images/lecteur.png"
-                    on_release:
-                        root.manager.transition.direction = "right"
-                        app.root.current = "Player"
-                BoxLayout:
-                    size_hint_y: 0.25
-
-        BoxLayout:  # boite centre
-            size_hint_x: 0.88
-
-            BoxLayout:  # une boite pour scroll
-                orientation: 'vertical'
-                Label:
-                    size_hint_y: 0.15
-                    color: 0.8, 0.8, 0.8
-                    font_size: "48dp"
-                    text: 'Titres'
-                ScrollView:  # scroll
-                    id: tracks_scroll
-
-        BoxLayout:  # boite gauche
-            size_hint_x: 0.06
+            BoxLayout:  # Bouton en bas
+                size_hint_y: 0.03
+                BoxLayout:  # 4 button
+                    orientation: 'horizontal'
+                    Button:
+                        font_size: "20dp"
+                        background_color: (2.8, 2.8, 2.8, 1)
+                        color: 142, 142, 142, 1
+                        bold: True
+                        text: 'Eteindre'
+                        on_release: root.shutdown()
+                    Button:
+                        font_size: "20dp"
+                        background_color: (2.8, 2.8, 2.8, 1)
+                        color: 142, 142, 142, 1
+                        bold: True
+                        text: 'Quitter'
+                        on_release: root.quit()
+                    Button:
+                        font_size: "20dp"
+                        background_color: (2.8, 2.8, 2.8, 1)
+                        color: 142, 142, 142, 1
+                        bold: True
+                        text: 'Options'
+                        on_release: app.open_settings()
+                    Button:
+                        font_size: "20dp"
+                        background_color: (2.8, 2.8, 2.8, 1)
+                        color: 142, 142, 142, 1
+                        bold: True
+                        text: 'Mise à jour'
+                        on_release: root.app.ask_for_library_and_covers()

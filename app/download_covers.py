@@ -2,6 +2,7 @@
 from urllib.request import Request, urlopen, urlretrieve
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import iterparse
+import urllib.parse
 
 
 lines = """
@@ -43,6 +44,8 @@ class DownloadFiles:
         self.url = url
         self.root = root
         self.covers_list = [x.split('/')[-1] for x in covers_list]
+        # Suppression du json qui sera toujours rechargé
+        self.covers_list.remove('library.json')
         print(f"Nom des Covers existantes: {self.covers_list}")
 
     def download_url(self):
@@ -81,19 +84,25 @@ class DownloadFiles:
         la liste self.covers_list
         """
         if file_name not in self.covers_list:
-            file_url = self.url + file_name
-            file_url = file_url.replace(" ", "%20")
+            name = urllib.parse.quote_plus(file_name)
+            file_url = self.url + name
+            # # file_url = file_url.replace(" ", "%20")
 
-            # Uniquement si pas dans le dossiers covers
             fichier = self.root + '/' + file_name
-            urlretrieve(file_url, fichier)
-            print("Enregistrement de", fichier)
+
+            print("Téléchargement du cover:", file_url)
+            print("dans:", fichier)
+
+            try:
+                urlretrieve(file_url, fichier)
+            except:
+                print("URL invalide:", file_url)
 
 
 
 if __name__ == '__main__':
     covers_list = ['/media/data/3D/projets/player/app/covers/default_cover.png']
-    df = DownloadFiles('http://192.168.0.105:8080/',
+    df = DownloadFiles('http://192.168.0.108:8080/',
                        '/media/data/3D/projets/player/app/covers',
                        covers_list)
     text = df.download_url()

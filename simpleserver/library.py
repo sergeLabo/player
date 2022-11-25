@@ -3,9 +3,11 @@ import os
 from pathlib import Path
 import json
 from collections import OrderedDict
+import urllib.parse
 
 import mutagen
 from mutagen.flac import Picture, FLAC
+
 
 
 def get_library(library_path, current_dir):
@@ -60,12 +62,12 @@ def get_library(library_path, current_dir):
     return library
 
 
-def dict_to_OrderdDict(dico):
+# # def dict_to_OrderdDict(dico):
 
-    order_of_keys = sorted([x for x in dico.keys()])
-    list_of_tuples = [(key, dico[key]) for key in order_of_keys]
-    ordered_dict = OrderedDict(list_of_tuples)
-    return ordered_dict
+    # # order_of_keys = sorted([x for x in dico.keys()])
+    # # list_of_tuples = [(key, dico[key]) for key in order_of_keys]
+    # # ordered_dict = OrderedDict(list_of_tuples)
+    # # return ordered_dict
 
 
 def print_library(library):
@@ -93,6 +95,7 @@ def fichier_information(fichier, num, current_dir):
             title = 'unknown'
 
         try:
+            # Dans raw, Chars incompatible avec url
             album = str(song['ALBUM'][0])
         except:
             album = 'unknown'
@@ -110,10 +113,11 @@ def fichier_information(fichier, num, current_dir):
         try:
             artwork = FLAC(fichier).pictures
             if artwork:
+                album_quote = urllib.parse.quote_plus(album)
                 if artwork[0].mime == 'image/jpeg':
-                    cover = current_dir + '/covers/' + album + '.jpg'
+                    cover = current_dir + '/covers/' + album_quote + '.jpg'
                 elif artwork[0].mime == 'image/png':
-                    cover = current_dir + '/covers/' + album + '.png'
+                    cover = current_dir + '/covers/' + album_quote + '.png'
                 p = Path(cover)
                 if not p.is_file():
                     with open(cover, 'wb') as img:
@@ -145,7 +149,5 @@ def get_tracks(library, album_key):
 
 
 if __name__ == '__main__':
-    library = get_library('/media/data/3D/music/flacs', '/media/data/3D/projets/player/simpleserver')
+    library = get_library('/media/pi/USB3x16Go/music/flacs', '/home/pi/projets/simpleserver')
     print_library(library)
-    tracks = get_tracks(library, '/media/data/3D/music/flacs/Vieux_Farka_Tour\u00e9_Samba')
-    print(tracks)

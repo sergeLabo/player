@@ -1,0 +1,149 @@
+09-28 14:27:16.551 11761 11761 E AASAservice-TokenRule: parseToken() : TokenFile is null
+09-28 14:27:16.552 11761 11761 D AASAservice-UpdateReceiver: onReceive() : package = org.test.player, uid = -1
+09-28 14:27:16.552  2408  3226 D AASAinstall: there is not AASApackages.xml file
+09-28 14:27:16.553  2408  3226 I AASAdebug:  readUids-end
+09-28 14:27:16.554 11761 11761 D AASAservice-AASABinder: getManagedSharedPkgList() : packageName - org.test.player, uid - -1
+09-28 14:27:16.555 11761 11761 D AASAservice-UpdateReceiver: AASAUpdateReceiver : check SharedUID package.
+09-28 14:27:16.555 11761 11761 I AASAservice-UpdateReceiver: AASAUpdateReceiver() : BLOCK BY PACKAGE
+09-28 14:27:16.555 11761 11761 E AASAservice-UpdateReceiver: AASAUpdateReceiver : myrule is null.
+09-28 14:27:16.558 11761 11761 I art     : System.exit called, status: 0
+09-28 14:27:16.558 11761 11761 I AndroidRuntime: VM exiting with result code 0, cleanup skipped.
+09-28 14:27:16.632  2408  3230 I ActivityManager: Process com.samsung.aasaservice (pid 11761) has died(46,1140)
+09-28 14:27:16.633  2408  3230 D ActivityManager: cleanUpApplicationRecord -- 11761
+09-28 14:27:16.638  2408  2448 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:16.638  2408  2448 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:16.638  2408  2448 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:16.645 11388 11388 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.startService:1403 android.content.ContextWrapper.startService:673 android.content.ContextWrapper.startService:673 com.samsung.android.bbc.bbcagent.bbccontroller.receiver.PackageEventReceiver.onReceive:174 android.app.ActivityThread.handleReceiver:3359
+09-28 14:27:16.649  2408  3921 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:16.649  2408  3921 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:16.649  2408  3921 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:16.653  2408  5158 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:16.653  2408  5158 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:16.653  2408  5158 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:16.654  3209  3209 D VvmPackageInstallReceiver: onReceive intent : Intent { act=android.intent.action.PACKAGE_ADDED dat=package:org.test.player flg=0x4000010 cmp=com.android.phone/.vvm.omtp.VvmPackageInstallReceiver launchParam=MultiScreenLaunchParams { mDisplayId=0 mFlags=0 } bqHint=1 (has extras) }
+09-28 14:27:16.654  3209  3209 D VvmPackageInstallReceiver: intent getAction : android.intent.action.PACKAGE_ADDED
+09-28 14:27:16.668  3209  3209 D VvmPackageInstallReceiver: phoneAccounts : []
+09-28 14:27:16.670  2408  3877 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:16.670  2408  3877 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:16.670  2408  3877 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:16.675  2408  4696 D MountService: getExternalStorageMountMode : 1
+09-28 14:27:16.675  2408  4696 D MountService: getExternalStorageMountMode : 3
+09-28 14:27:16.675  2408  4696 D MountService: getExternalStorageMountMode : final mountMode=1, uid : 1000, packageName : com.android.settings
+09-28 14:27:16.676  4000  4080 E ContactsProvider_EventLog: Flush buffer to file cnt : 1 size : 0Kb duration : 2ms lastUpdatedAfter : 5833 ms mFlush_time_threasold : 2000 mCurrentSize : 91
+09-28 14:27:16.694  2408  4696 I ActivityManager: Start proc 11784:com.android.settings/1000 for broadcast com.android.settings/com.samsung.android.settings.nearbyscan.NearbyScanningBroadCastReciever
+09-28 14:27:16.695 11784 11784 E Zygote  : v2
+09-28 14:27:16.695 11784 11784 I libpersona: KNOX_SDCARD checking this for 1000
+09-28 14:27:16.695 11784 11784 I libpersona: KNOX_SDCARD not a persona
+09-28 14:27:16.697 11784 11784 E Zygote  : accessInfo : 0
+09-28 14:27:16.697 11784 11784 W SELinux : SELinux selinux_android_compute_policy_index : Policy Index[2],  Con:u:r:zygote:s0 RAM:SEPF_SECMOBILE_7.0_0010, [-1 -1 -1 -1 0 1]
+09-28 14:27:16.699 11784 11784 I SELinux : SELinux: seapp_context_lookup: seinfo=platform, pkgname=com.android.settings
+09-28 14:27:16.717  2771  2771 D NetworkController: updateCarrierText : STARGATE
+09-28 14:27:16.717  2771  2771 D NetworkController: dynamicallyReduceTextSize : mDisplayMetrics.densityDpi360
+09-28 14:27:16.719 11784 11784 D TimaKeyStoreProvider: TimaKeyStore is not enabled: cannot add TimaSignature Service and generateKeyPair Service
+09-28 14:27:16.722  2408  2870 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:16.722  2408  2870 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:16.722  2408  2870 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:16.722  2408  2870 I ActivityManager: DSS on for com.android.settings and scale is 1.0
+09-28 14:27:16.724  2408  2870 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:16.724  2408  2870 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:16.724  2408  2870 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:16.728  2408  2870 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:16.728  2408  2870 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:16.728  2408  2870 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:16.730  2771  2771 D KeyguardUpdateMonitor: received broadcast com.samsung.systemui.ACTION_VOIP_CALL_STATE_CHANGED
+09-28 14:27:16.730  2771  2771 D CarrierText: updateCarrierText(): 0,DefaultText = Aucune connexion réseau
+09-28 14:27:16.730  2771  2771 D MultiSimUtils: isSimStateReadyorNotReady() : simSlot = 0, simState = NOT_READY
+09-28 14:27:16.730  2771  2771 D CarrierText: setText :
+09-28 14:27:16.733  2771  2771 D KeyguardClockPage: onRefreshCarrierInfo(pre, now): false, false
+09-28 14:27:16.754 11784 11784 W System  : ClassLoader referenced unknown path: /system/priv-app/SecSettings2/lib/arm64
+09-28 14:27:16.804 11513 11616 I python  : Essai de connexion ...
+09-28 14:27:16.809 11513 11616 I python  : Dossier des covers: /storage/emulated/0/covers
+09-28 14:27:16.809 11513 11616 I python  : Ce répertoire existe: /storage/emulated/0/covers
+09-28 14:27:16.809 11513 11616 I python  : Le fichier library = /storage/emulated/0/covers/library.json
+09-28 14:27:16.809 11513 11616 I python  : Création de /storage/emulated/0/covers/library.json si inexistant
+09-28 14:27:16.809 11513 11616 I python  : verif a exist True
+09-28 14:27:16.810 11513 11616 I python  : self.library chargé
+09-28 14:27:16.810 11513 11616 I python  : key in self.app.library.keys(): /media/pi/USB3x16Go/music/flacs/Sitka Sun - All The Way West
+09-28 14:27:16.810 11513 11616 I python  : cover in self.app.library[key]: /home/pi/projets/simpleserver/covers/All The Way West.jpg
+09-28 14:27:16.810 11513 11616 I python  : cover_name: All The Way West.jpg
+09-28 14:27:16.810 11513 11616 I python  : Player Cover: /storage/emulated/0/coversAll The Way West.jpg
+09-28 14:27:16.810 11513 11616 I python  : key in self.app.library.keys(): /media/pi/USB3x16Go/music/flacs/The Miles Davis Quintet - Cookin' With The Miles Davis Quintet
+09-28 14:27:16.810 11513 11616 I python  : cover in self.app.library[key]: /home/pi/projets/simpleserver/covers/Cookin' With The Miles Davis Quintet.jpg
+09-28 14:27:16.810 11513 11616 I python  : cover_name: Cookin' With The Miles Davis Quintet.jpg
+09-28 14:27:16.811 11513 11616 I python  : Player Cover: /storage/emulated/0/coversCookin' With The Miles Davis Quintet.jpg
+09-28 14:27:16.811 11513 11616 I python  : key in self.app.library.keys(): /media/pi/USB3x16Go/music/flacs/The Miles Davis Quintet - Relaxin' With The Miles Davis Quintet
+09-28 14:27:16.811 11513 11616 I python  : cover in self.app.library[key]: /home/pi/projets/simpleserver/covers/Relaxin' With The Miles Davis Quintet.jpg
+09-28 14:27:16.811 11513 11616 I python  : cover_name: Relaxin' With The Miles Davis Quintet.jpg
+09-28 14:27:16.811 11513 11616 I python  : Player Cover: /storage/emulated/0/coversRelaxin' With The Miles Davis Quintet.jpg
+09-28 14:27:16.811 11513 11616 I python  : key in self.app.library.keys(): /media/pi/USB3x16Go/music/flacs/Vieux_Farka_Touré_Samba
+09-28 14:27:16.811 11513 11616 I python  : cover in self.app.library[key]: /home/pi/projets/simpleserver/covers/Samba.jpg
+09-28 14:27:16.811 11513 11616 I python  : cover_name: Samba.jpg
+09-28 14:27:16.811 11513 11616 I python  : Player Cover: /storage/emulated/0/coversSamba.jpg
+09-28 14:27:16.811 11513 11616 I python  : key in self.app.library.keys(): /media/pi/USB3x16Go/music/flacs/Bassekou Kouyaté & Ngoni Ba - Ba Power
+09-28 14:27:16.811 11513 11616 I python  : cover in self.app.library[key]: /home/pi/projets/simpleserver/covers/Ba Power.jpg
+09-28 14:27:16.811 11513 11616 I python  : cover_name: Ba Power.jpg
+09-28 14:27:16.811 11513 11616 I python  : Player Cover: /storage/emulated/0/coversBa Power.jpg
+09-28 14:27:16.811 11513 11616 I python  : key in self.app.library.keys(): /media/pi/USB3x16Go/music/flacs/Jack DeJohnette- Ravi Coltrane- Matthew Garrison - In Movement
+09-28 14:27:16.811 11513 11616 I python  : cover in self.app.library[key]: /home/pi/projets/simpleserver/covers/In Movement.jpg
+09-28 14:27:16.811 11513 11616 I python  : cover_name: In Movement.jpg
+09-28 14:27:16.811 11513 11616 I python  : Player Cover: /storage/emulated/0/coversIn Movement.jpg
+09-28 14:27:16.811 11513 11616 I python  : key in self.app.library.keys(): /media/pi/USB3x16Go/music/flacs/Vieux Farka Touré & Khruangbin - Ali
+09-28 14:27:16.811 11513 11616 I python  : cover in self.app.library[key]: /home/pi/projets/simpleserver/covers/Ali.jpg
+09-28 14:27:16.811 11513 11616 I python  : cover_name: Ali.jpg
+09-28 14:27:16.811 11513 11616 I python  : Player Cover: /storage/emulated/0/coversAli.jpg
+09-28 14:27:16.811 11513 11616 I python  : key in self.app.library.keys(): /media/pi/USB3x16Go/music/flacs/Tentempie Jazz & Latin - Tentempie Jazz& Latin 2019
+09-28 14:27:16.811 11513 11616 I python  : cover in self.app.library[key]: /home/pi/projets/simpleserver/covers/Tentempie Jazz& Latin 2019.jpg
+09-28 14:27:16.811 11513 11616 I python  : cover_name: Tentempie Jazz& Latin 2019.jpg
+09-28 14:27:16.811 11513 11616 I python  : Player Cover: /storage/emulated/0/coversTentempie Jazz& Latin 2019.jpg
+09-28 14:27:16.811 11513 11616 I python  : key in self.app.library.keys(): /media/pi/USB3x16Go/music/flacs/Luka Productions - Falaw
+09-28 14:27:16.811 11513 11616 I python  : cover in self.app.library[key]: /home/pi/projets/simpleserver/covers/Falaw.jpg
+09-28 14:27:16.811 11513 11616 I python  : cover_name: Falaw.jpg
+09-28 14:27:16.811 11513 11616 I python  : Player Cover: /storage/emulated/0/coversFalaw.jpg
+09-28 14:27:16.813 11513 11616 I python  : Ecran Albums: Ajout de l'album: /media/pi/USB3x16Go/music/flacs/Sitka Sun - All The Way West
+09-28 14:27:16.885 11784 11784 I BNRClientProivder, VERSION : 1.7.5: register - xml6 quick_backup : ACCESSIBILITYSETTINGS, X6qErjsfs2, com.samsung.android.settings.accessibility.sharedaccessibility.scloud.BNRTask
+09-28 14:27:16.900 11784 11784 I QBNRClientHelper: init SyncClientHelper : ACCESSIBILITYSETTINGS
+09-28 14:27:16.901 11784 11784 I BNRClientProivder, VERSION : 1.7.5: register - xml6 quick_backup : CONNECTIONS, C0phMaUuZZ, com.samsung.android.settings.wifi.mobileap.WifiApBackupRestore
+09-28 14:27:16.920 11784 11784 I QBNRClientHelper: init SyncClientHelper : CONNECTIONS
+09-28 14:27:16.921 11784 11784 I BNRClientProivder, VERSION : 1.7.5: register - xml6 quick_backup : WiFi, C0phMaUuZZ, com.samsung.android.settings.wifi.WifiBackupRestore
+09-28 14:27:16.945 11784 11784 I QBNRClientHelper: init SyncClientHelper : WiFi
+09-28 14:27:17.003  2408  3226 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:17.003  2408  3226 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:17.003  2408  3226 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:17.007  8650  8650 I Finsky  : [1] qnv.i(-1): PackageMonitorReceiverImpl - Received: android.intent.action.PACKAGE_ADDED, [h74t2qZbc0nZ_qra35utHl1qeFwXCbnxgRNhQ-gumo4]
+09-28 14:27:17.008  8650  8650 I Finsky  : [1] qok.n(-1): Invalidating cached PackageState for org.test.player
+09-28 14:27:17.016 11513 11616 I python  : Bind de /storage/emulated/0/coversAll The Way West.jpg
+09-28 14:27:17.017 11513 11616 I python  : Ecran Albums: Ajout de l'album: /media/pi/USB3x16Go/music/flacs/The Miles Davis Quintet - Cookin' With The Miles Davis Quintet
+09-28 14:27:17.031  8650  8765 I Finsky  : [608] fze.a(5): AIM: AppInfoManager-Perf > OnDeviceAppInfo > cacheHitCount=1, cacheMissCount=0. Missed  in cache (limit 10) : []
+09-28 14:27:17.033  8650  8765 I Finsky  : [608] fwr.apply(82): AIM: Got app ownership map. App counts: . Unique apps: 0
+09-28 14:27:17.055  8650 11448 I Finsky  : [686] kib.run(20): Wrote row to frosting DB: 22708
+09-28 14:27:17.057  8650  8765 I Finsky  : [608] fyx.a(11): AIM: AppInfoManager-Perf > ItemModel > CacheSize=74, cacheHitCount=0, cacheMissCount=0, total appsWithNoServerDataCount=6. Missed  in cache (limit 10) : []
+09-28 14:27:17.073  8650  8650 I Finsky  : [1] fxc.a(1): AIM: AppInfoCacheUpdater -> invalidating apps: [org.test.player]
+09-28 14:27:17.074  8650  8650 I Finsky  : [1] fxu.k(1): AIM: AppInfoManager-Perf > getApps > called for 1 apps
+09-28 14:27:17.075  8650 11453 I Finsky  : [689] alo.Xd(6): [ContentSync] finished, scheduled=false
+09-28 14:27:17.076  8650  8765 I Finsky  : [608] fze.a(5): AIM: AppInfoManager-Perf > OnDeviceAppInfo > cacheHitCount=0, cacheMissCount=1. Missed  in cache (limit 10) : [org.test.player]
+09-28 14:27:17.079  8650  8765 I Finsky  : [608] fwr.apply(82): AIM: Got app ownership map. App counts: . Unique apps: 0
+09-28 14:27:17.091  8650 11448 I Finsky  : [686] kib.run(20): Wrote row to frosting DB: 22709
+09-28 14:27:17.110  2408  2439 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:17.110  2408  2439 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:17.110  2408  2439 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:17.111 11460 11460 D GOS:GameServiceReceiver: action : android.intent.action.PACKAGE_ADDED
+09-28 14:27:17.115 11460 11460 I GOS:DatabaseHelper: com.enhance.gameservice.App@6cca9f2
+09-28 14:27:17.115 11460 11460 I GOS:DatabaseHelper: Create a DatabaseHelper
+09-28 14:27:17.129  8650  8751 I Finsky  : [597] fyx.a(11): AIM: AppInfoManager-Perf > ItemModel > CacheSize=74, cacheHitCount=0, cacheMissCount=0, total appsWithNoServerDataCount=6. Missed  in cache (limit 10) : []
+09-28 14:27:17.135  8650  8765 I Finsky  : [608] fkm.accept(28): AIM: AppInfoManager-Perf > getApps > data collection finished
+09-28 14:27:17.136  8650  8765 I Finsky  : [608] ffh.run(22): AIM: AppInfoManager-Perf > maybeDestroyAppInfoManager is called. actives = 0
+09-28 14:27:17.150 11731 11760 D InstalledAppProviderSer: insertAppIntoDb android
+09-28 14:27:17.151 11460 11460 D GOS:PkgData: PkgData(), pkgName: org.test.player
+09-28 14:27:17.151 11460 11460 D GOS:PkgData: setCustomFeatureFlag, pkgName: org.test.player, old featureFlag: 342277969731031827, new featureFlag: 346781844236309267
+09-28 14:27:17.152 11460 11460 D GOS:GameServiceReceiver: replacing. ignore
+09-28 14:27:17.156  2408  3226 I ActivityManager: KPU : put [com.samsung.android.svcagent] : 8796 K
+09-28 14:27:17.156  2408  3226 I ActivityManager: Killing 10160:com.samsung.android.svcagent/1000 (adj 906): DHA:empty #37
+09-28 14:27:17.157  2408  3226 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:17.157  2408  3226 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:17.157  2408  3226 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:17.187 11731 11760 D InstalledAppProviderSer: insertAppIntoDb com.android.backupconfirm
+09-28 14:27:17.211  2408  2439 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:17.211  2408  2439 D CompatibilityInfo: applicationDensity - 360
+09-28 14:27:17.211  2408  2439 D CompatibilityInfo: applicationScale - 1.0
+09-28 14:27:17.215  2408  2569 D CompatibilityInfo: mCompatibilityFlags - 4
+09-28 14:27:17.215  2408  2569 D CompatibilityInfo: applicationDensity - 360
