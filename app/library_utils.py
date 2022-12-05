@@ -5,14 +5,6 @@ import json
 from collections import OrderedDict
 
 
-def dict_to_OrderdDict(dico):
-
-    order_of_keys = sorted([x for x in dico.keys()])
-    list_of_tuples = [(key, dico[key]) for key in order_of_keys]
-    ordered_dict = OrderedDict(list_of_tuples)
-    return ordered_dict
-
-
 def fichier_information(fichier, num, current_dir):
     """Informations sur un fichier"""
 
@@ -71,23 +63,3 @@ def fichier_information(fichier, num, current_dir):
                                                             0)
 
     return title, album, artist, cover, int(tracknumber), lenght
-
-
-def get_tracks(lib_infos, album_key):
-    """
-    l = {'album_key':{ 'album': 'toto',
-                                'artist':,
-                                'cover':,
-                                'titres': { 1: ('tata', 'chemin abs', lenght),
-                                            2: ('titi', 'chemin abs', lenght)}}}
-    Pas utilisé
-    """
-
-    keys = sorted([int(x) for x in list(lib_infos[album_key]['titres'].keys())])
-    tracks = OrderedDict()
-
-    # Un dict ordonné conserve l'ordre des clés de la création
-    for item in keys:
-        tracks[item] = lib_infos[album_key]['titres'][str(item)]
-
-    return tracks

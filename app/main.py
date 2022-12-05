@@ -11,6 +11,7 @@ from functools import partial
 from pathlib import Path
 import json
 import urllib.parse
+import shutil
 
 import kivy
 kivy.require('2.0.0')
@@ -31,7 +32,6 @@ from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
 from kivy.utils import platform
 
-from library_utils import dict_to_OrderdDict
 from download_covers import DownloadFiles
 from player_utils import create_json_file, save_library, load_library,\
                          create_directory, get_file_list
@@ -73,8 +73,13 @@ class MyTcpClient(Protocol):
         print("Connection Made: début d'envoi des messages.")
         # Un premier envoi pour lancer les boucles réception/envoi
         # Attente que le serveur se lance
+        self.connected = 1
         sleep(0.5)
-        self.transport.write(json.dumps([0]).encode('utf-8'))
+        n = 0
+        while n < 5:
+            n += 1
+            self.transport.write(json.dumps([0]).encode('utf-8'))
+            sleep(0.2)
 
     def connectionLost(self, reason):
         print("Connection Lost")
@@ -84,8 +89,8 @@ class MyTcpClient(Protocol):
         Répond aussitôt.
         """
         self.app.handle_message(data)
-        s = ['from_client', self.app.msg_for_svr]
 
+        s = ['from_client', self.app.msg_for_svr]
         self.transport.write(json.dumps(s).encode('utf-8'))
 
         # Reset après envoi
@@ -147,8 +152,6 @@ class Player(FloatLayout):
 
     def play_track(self, track):
         """
-        album =
-        track =
         l = {'nom du dossier parent': {'album': 'toto', # nom sans chemin
                                        'artist':,
                                        'cover':,
@@ -205,16 +208,16 @@ class Player(FloatLayout):
     def play_pause(self):
         if time() - self.t_block > 2:
             self.t_block = time()
-            if not self.pause:
+            if self.pause:
                 self.ids.play_pause.background_normal = 'images/Play-normal.png'
                 self.ids.play_pause.background_down = 'images/Play-down.png'
-                self.app.msg_for_svr['play_pause'] = 1
-                self.pause = 1
+                self.app.msg_for_svr['play_pause'] = 0
+                self.pause = 0
             else:
                 self.ids.play_pause.background_normal = 'images/Play-down.png'
                 self.ids.play_pause.background_down = 'images/Play-normal.png'
-                self.app.msg_for_svr['play_pause'] = 0
-                self.pause = 0
+                self.app.msg_for_svr['play_pause'] = 1
+                self.pause = 1
 
     def change_position(self, value):
         print("Nouvelle position du slider:", value)
@@ -229,9 +232,6 @@ class Player(FloatLayout):
         self.ids.artist.text = self.artist
         self.ids.album_art.source = self.cover
         self.ids.song_slider.max = self.maxi
-
-    def reset(self):
-        pass
 
     def set_selected_album(self, value, instance):
         self.album = value
@@ -269,14 +269,16 @@ class Player(FloatLayout):
         # Make sure the height is such that there is something to scroll.
         self.layout_albums.bind(minimum_height=self.layout_albums.setter('height'))
 
+        print("Covers:")
         for key in self.app.library.keys():
             # key = 'nom du dossier parent'
             album = key
             cover = self.app.library[key]['cover']
+            print("    ", cover)
 
             try:
                 button = Button(background_normal=cover,
-                                background_down='covers/default_cover.png',
+                                background_down='default_cover.png',
                                 size_hint_y=None,
                                 height=int((self.size[0]-280)/4.2))  # 219
                 buttoncallback = partial(self.set_selected_album, album)
@@ -289,7 +291,6 @@ class Player(FloatLayout):
                 print("Erreur affichage image dans Albums:", e)
 
         try:
-
             self.ids.album_scroll.add_widget(self.layout_albums)
         except:
             print("Les albums sont déjà ajoutés!")
@@ -362,6 +363,7 @@ class PlayerApp(App):
         Le self de Player est l'objet Player créé ici.
         """
         Window.clearcolor = (0.8, 0.8,0.8, 1)
+        # Dans cette class, self.root est ce qui est retourné soit Player()
         return Player()
 
     def build_config(self, config):
@@ -423,6 +425,10 @@ class PlayerApp(App):
         # Ne fait rien si existant
         create_directory(self.covers_path)
 
+        # Copie de default_cover.png dans covers
+        shutil.copyfile(str(Path.cwd()) + '/default_cover.png',
+                        self.covers_path + '/default_cover.png')
+
         # Récupération de la library qui est dans covers
         if ANDROID:
             self.library_file = self.covers_path + '/library.json'
@@ -443,7 +449,7 @@ class PlayerApp(App):
         self.msg_for_svr_reset()
 
     def msg_for_svr_reset(self):
-        """Appelé par tcp_init et end"""
+        """Appelé par tcp_init"""
         self.msg_for_svr = {}
         self.msg_for_svr['album'] = ""
         self.msg_for_svr['new_track'] = 1
@@ -452,7 +458,6 @@ class PlayerApp(App):
         self.msg_for_svr['quit'] = 0
         self.msg_for_svr['shutdown'] = 0
         self.msg_for_svr['http_on'] = 0
-        self.msg_for_svr['end received'] = 0
 
     def handle_message(self, msg):
 
@@ -467,8 +472,7 @@ class PlayerApp(App):
                 timestamp = msg[1]
                 current_lenght = msg[2]
                 track = msg[3]
-                end = msg[4]
-                played_track = msg[5]
+                played_track = msg[4]
 
                 # Timestamp changée toutes les 2 secondes
                 if timestamp:
@@ -486,24 +490,18 @@ class PlayerApp(App):
                     print("New track demandé par le serveur:", track)
                     self.root.new_track(track)
 
-                # Fin de l'album: ne peut être reçu que si l'app tourne
-                if end == 1:
-                    print(f"Fin de l'abum {self.root.album}")
-                    self.msg_for_svr_reset()
-                    self.root.track = 1
-                    self.root.album = ""
-                    self.root.pause = 0
-                    self.msg_for_svr_reset()
-                    self.msg_for_svr['end received'] = 1
-
                 # Liste
-                l = played_track
+                l = played_track[-20:]
                 t = ""
                 for i in l:
                     t += str(i) + " | "
                 self.root.ids.debug.text = t
 
     def ask_for_library_and_covers(self):
+        # Fait la demande dans un Thread
+        Thread(target=self.ask_for_library_and_covers_thread).start()
+
+    def ask_for_library_and_covers_thread(self):
         """Demande de la lib et mise à jour dans un thread."""
 
         # Fichiers à télécharger
@@ -513,22 +511,28 @@ class PlayerApp(App):
             print("    ", img)
 
         # Demande de mise en route du httpserver
-        self.msg_for_svr['http_on'] = 1
+        n = 0
+        while n < 5:
+            n += 1
+            self.msg_for_svr['http_on'] = 1
+            print(f"Demande d'activation du serveur http sur le serveur")
+            sleep(0.1)
+
         df = DownloadFiles(self.http_adress,
                            self.covers_path,
                            files_list)
-        # Attente que le serveur démarre
-        sleep(1)
+
+        sleep(10)
+        print(f"Téléchargement en htttp .............................")
         try:
-            print(f"Téléchargement en htttp")
             text = df.download_url()
             df.get_missing_covers(text)
-            scrm.info = "Albums mis à jour et chargés!"
         except:
-            print("Le serveur HTTP n'est pas accessible !")
+            print("Problème avec le HTTP")
 
         # Demande de stop du httpserver
         self.msg_for_svr['http_on'] = 0
+
         # Reload the new library
         load_library(self.library_file)
         # Affichage des images dans l'écran album
@@ -563,12 +567,12 @@ class PlayerApp(App):
         self.wait_before_shutdown_thread()
 
     def wait_before_shutdown_thread(self):
-         """Pour permettre au serveur d'avoir le temps de recevoir"""
+         """Pour permettre au serveur d'avoir le temps de recevoir."""
          Thread(target=self.wait_before_shutdown).start()
 
     def wait_before_shutdown(self):
         t = time()
-        while time() - t < 2:
+        while time() - t < 1:
             print("Attente ...")
             sleep(0.1)
         print("Fin du thread wait_before_shutdown ...")

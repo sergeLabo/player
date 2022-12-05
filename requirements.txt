@@ -1,2 +1,3 @@
 twisted
 kivy
+python-opencv

@@ -62,14 +62,6 @@ def get_library(library_path, current_dir):
     return library
 
 
-# # def dict_to_OrderdDict(dico):
-
-    # # order_of_keys = sorted([x for x in dico.keys()])
-    # # list_of_tuples = [(key, dico[key]) for key in order_of_keys]
-    # # ordered_dict = OrderedDict(list_of_tuples)
-    # # return ordered_dict
-
-
 def print_library(library):
     """Le json met les int en str"""
     print(json.dumps(library, sort_keys=False, indent=4))
@@ -109,7 +101,8 @@ def fichier_information(fichier, num, current_dir):
             lenght = int(song.info.length)
         except:
             lenght = 60
-
+            
+        cover = "covers/Benkadi.jpg"
         try:
             artwork = FLAC(fichier).pictures
             if artwork:
@@ -124,28 +117,9 @@ def fichier_information(fichier, num, current_dir):
                         img.write(artwork[0].data)
                         print(f"Save of cover: {cover}")
         except:
-            cover = "covers/default_cover.png"
+           print("Erreur fichier_information")
 
     return title, album, artist, cover, int(tracknumber), lenght
-
-
-def get_tracks(library, album_key):
-    """
-    l = {'album_key':{ 'album': 'toto',
-                                'artist':,
-                                'cover':,
-                                'titres': { 1: ('tata', 'chemin abs', lenght),
-                                            2: ('titi', 'chemin abs', lenght)}}}
-    """
-    keys = sorted(list(library[album_key]['titres'].keys()))
-
-    tracks = OrderedDict()
-    # Un dict ordonné conserve l'ordre des clés de la création
-    for item in keys:
-        tracks[item] = library[album_key]['titres'][item]
-    # # print(tracks)
-    return tracks
-
 
 
 if __name__ == '__main__':

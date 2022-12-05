@@ -43,6 +43,8 @@ class DownloadFiles:
         """
         self.url = url
         self.root = root
+        print(f"URL: {self.url} root {self.root}")
+
         self.covers_list = [x.split('/')[-1] for x in covers_list]
         # Suppression du json qui sera toujours rechargé
         self.covers_list.remove('library.json')
@@ -55,6 +57,7 @@ class DownloadFiles:
         req = Request(self.url)
         resp = urlopen(req, timeout=1).read()
         text = resp.decode('utf-8')
+        # # print(f"Page html chargée {text}")
         return text
 
     def clean_text(self, text):
