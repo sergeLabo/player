@@ -33,8 +33,7 @@ from kivy.core.window import Window
 from kivy.utils import platform
 
 from download_covers import DownloadFiles
-from player_utils import create_json_file, save_library, load_library,\
-                         create_directory, get_file_list
+from player_utils import create_json_file, load_library, create_directory, get_file_list
 
 
 global ANDROID

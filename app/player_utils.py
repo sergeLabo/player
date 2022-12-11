@@ -13,14 +13,6 @@ def create_json_file(library_file):
         print(f"Création de {library_file}")
 
 
-def save_library(library, library_file):
-    """Enregistrement de la library en json dans le dossier courrant"""
-
-    with open(library_file, "w") as fd:
-        fd.write(json.dumps(library))
-    print(f"{library_file} enregistré")
-
-
 def load_library(library_file):
     """Lecture de library_file"""
     with open(library_file) as fd:

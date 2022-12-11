@@ -13,23 +13,6 @@ def create_json_file(library_file):
         print(f"Création de {library_file}")
 
 
-def save_library(library, library_file):
-    """Enregistrement de la library en json dans le dossier courrant"""
-
-    with open(library_file, "w") as fd:
-        fd.write(json.dumps(library))
-    print(f"{library_file} enregistré")
-
-
-def load_library(library_file):
-    """Lecture de library_file"""
-    with open(library_file) as fd:
-        data = fd.read()
-        library = json.loads(data)
-    print(f"{library_file} chargé")
-    return library
-
-
 def create_directory(directory):
     """
     Crée le répertoire avec le chemin absolu.
@@ -45,24 +28,3 @@ def create_directory(directory):
         print(f"Problème de droits avec le répertoire: {directory}")
     except:
         print(f"Erreur avec le répertoire: {directory}")
-
-
-def get_file_list(directory, extentions):
-    """Retourne la liste de tous les fichiers avec les extentions de
-    la liste extentions
-    extentions = liste = ["mid", "midi"]]
-
-    Si directory est défini avec chemin relatif (idem avec absolu),
-        les fichiers sont avec chemin relatif (idem avec absolu).
-
-    Attention: subdirs comprend le dossier racine !
-    """
-
-    file_list = []
-    for path, subdirs, files in os.walk(directory):
-        for name in files:
-            for extention in extentions:
-                if name.endswith(extention):
-                    file_list.append(str(Path(path, name)))
-
-    return file_list

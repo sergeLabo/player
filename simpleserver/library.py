@@ -101,8 +101,8 @@ def fichier_information(fichier, num, current_dir):
             lenght = int(song.info.length)
         except:
             lenght = 60
-            
-        cover = "covers/Benkadi.jpg"
+
+        cover = "default_cover.png"
         try:
             artwork = FLAC(fichier).pictures
             if artwork:
@@ -117,8 +117,16 @@ def fichier_information(fichier, num, current_dir):
                         img.write(artwork[0].data)
                         print(f"Save of cover: {cover}")
         except:
-           print("Erreur fichier_information")
-
+            print("Erreur fichier_information")
+            
+    else:
+        title = "Unknow"
+        album = "Unknow"
+        artist = "Unknow"
+        cover = "default_cover.png"
+        tracknumber = 1
+        lenght = 100
+        
     return title, album, artist, cover, int(tracknumber), lenght
 
 
